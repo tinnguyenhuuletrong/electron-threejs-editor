@@ -4,7 +4,6 @@ window.THREE = require("./js/libs/threejs/Three.js")
 const APPLICATION = require("./js/index.js")
 // Global imports modules
 for(var key in APPLICATION) {
-	console.log(key)
 	window[key] = APPLICATION[key]
 }
 
