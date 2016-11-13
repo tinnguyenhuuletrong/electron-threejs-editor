@@ -287,39 +287,39 @@ export var Script = function ( editor ) {
 
 	// tern js autocomplete
 
-	var server = new CodeMirror.TernServer( {
-		caseInsensitive: true,
-		plugins: { threejs: null }
-	} );
+	// var server = new CodeMirror.TernServer( {
+	// 	caseInsensitive: true,
+	// 	plugins: { threejs: null }
+	// } );
 
-	codemirror.setOption( 'extraKeys', {
-		'Ctrl-Space': function(cm) { server.complete(cm); },
-		'Ctrl-I': function(cm) { server.showType(cm); },
-		'Ctrl-O': function(cm) { server.showDocs(cm); },
-		'Alt-.': function(cm) { server.jumpToDef(cm); },
-		'Alt-,': function(cm) { server.jumpBack(cm); },
-		'Ctrl-Q': function(cm) { server.rename(cm); },
-		'Ctrl-.': function(cm) { server.selectName(cm); }
-	} );
+	// codemirror.setOption( 'extraKeys', {
+	// 	'Ctrl-Space': function(cm) { server.complete(cm); },
+	// 	'Ctrl-I': function(cm) { server.showType(cm); },
+	// 	'Ctrl-O': function(cm) { server.showDocs(cm); },
+	// 	'Alt-.': function(cm) { server.jumpToDef(cm); },
+	// 	'Alt-,': function(cm) { server.jumpBack(cm); },
+	// 	'Ctrl-Q': function(cm) { server.rename(cm); },
+	// 	'Ctrl-.': function(cm) { server.selectName(cm); }
+	// } );
 
-	codemirror.on( 'cursorActivity', function( cm ) {
+	// codemirror.on( 'cursorActivity', function( cm ) {
 
-		if ( currentMode !== 'javascript' ) return;
-		server.updateArgHints( cm );
+	// 	if ( currentMode !== 'javascript' ) return;
+	// 	server.updateArgHints( cm );
 
-	} );
+	// } );
 
-	codemirror.on( 'keypress', function( cm, kb ) {
+	// codemirror.on( 'keypress', function( cm, kb ) {
 
-		if ( currentMode !== 'javascript' ) return;
-		var typed = String.fromCharCode( kb.which || kb.keyCode );
-		if ( /[\w\.]/.exec( typed ) ) {
+	// 	if ( currentMode !== 'javascript' ) return;
+	// 	var typed = String.fromCharCode( kb.which || kb.keyCode );
+	// 	if ( /[\w\.]/.exec( typed ) ) {
 
-			server.complete( cm );
+	// 		server.complete( cm );
 
-		}
+	// 	}
 
-	} );
+	// } );
 
 
 	//

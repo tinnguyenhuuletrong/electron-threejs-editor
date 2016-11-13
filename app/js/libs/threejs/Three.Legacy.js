@@ -914,44 +914,44 @@ export var UniformsUtils = {
 
 };
 
-//
+// //
 
-export function Projector () {
+// export function Projector () {
 
-	console.error( 'THREE.Projector has been moved to /examples/js/renderers/Projector.js.' );
+// 	console.error( 'THREE.Projector has been moved to /examples/js/renderers/Projector.js.' );
 
-	this.projectVector = function ( vector, camera ) {
+// 	this.projectVector = function ( vector, camera ) {
 
-		console.warn( 'THREE.Projector: .projectVector() is now vector.project().' );
-		vector.project( camera );
+// 		console.warn( 'THREE.Projector: .projectVector() is now vector.project().' );
+// 		vector.project( camera );
 
-	};
+// 	};
 
-	this.unprojectVector = function ( vector, camera ) {
+// 	this.unprojectVector = function ( vector, camera ) {
 
-		console.warn( 'THREE.Projector: .unprojectVector() is now vector.unproject().' );
-		vector.unproject( camera );
+// 		console.warn( 'THREE.Projector: .unprojectVector() is now vector.unproject().' );
+// 		vector.unproject( camera );
 
-	};
+// 	};
 
-	this.pickingRay = function ( vector, camera ) {
+// 	this.pickingRay = function ( vector, camera ) {
 
-		console.error( 'THREE.Projector: .pickingRay() is now raycaster.setFromCamera().' );
+// 		console.error( 'THREE.Projector: .pickingRay() is now raycaster.setFromCamera().' );
 
-	};
+// 	};
 
-}
+// }
 
-//
+// //
 
-export function CanvasRenderer () {
+// export function CanvasRenderer () {
 
-	console.error( 'THREE.CanvasRenderer has been moved to /examples/js/renderers/CanvasRenderer.js' );
+// 	console.error( 'THREE.CanvasRenderer has been moved to /examples/js/renderers/CanvasRenderer.js' );
 
-	this.domElement = document.createElementNS( 'http://www.w3.org/1999/xhtml', 'canvas' );
-	this.clear = function () {};
-	this.render = function () {};
-	this.setClearColor = function () {};
-	this.setSize = function () {};
+// 	this.domElement = document.createElementNS( 'http://www.w3.org/1999/xhtml', 'canvas' );
+// 	this.clear = function () {};
+// 	this.render = function () {};
+// 	this.setClearColor = function () {};
+// 	this.setSize = function () {};
 
-}
+// }

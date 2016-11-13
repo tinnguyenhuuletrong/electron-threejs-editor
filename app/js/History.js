@@ -16,7 +16,7 @@ export var History = function ( editor ) {
 
 	//Set editor-reference in Command
 
-	Command( editor );
+	this.command = new Command( editor );
 
 	// signals
 

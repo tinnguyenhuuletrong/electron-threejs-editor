@@ -26,7 +26,7 @@ export var Viewport = function ( editor ) {
 
 	var vrEffect, vrControls;
 
-	if ( WEBVR.isAvailable() === true ) {
+	if ( window.WEBVR && WEBVR.isAvailable() === true ) {
 
 		var vrCamera = new THREE.PerspectiveCamera();
 		vrCamera.projectionMatrix = camera.projectionMatrix;
@@ -345,7 +345,7 @@ export var Viewport = function ( editor ) {
 
 		container.dom.appendChild( renderer.domElement );
 
-		if ( WEBVR.isAvailable() === true ) {
+		if ( window.WEBVR && WEBVR.isAvailable() === true ) {
 
 			vrControls = new THREE.VRControls( vrCamera );
 			vrEffect = new THREE.VREffect( renderer );

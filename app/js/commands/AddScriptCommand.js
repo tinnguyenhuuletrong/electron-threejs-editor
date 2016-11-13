@@ -24,6 +24,8 @@ export var AddScriptCommand = function ( object, script ) {
 AddScriptCommand.prototype = {
 
 	execute: function () {
+		if(!this.object)
+			return alert("Please select a object")
 
 		if ( this.editor.scripts[ this.object.uuid ] === undefined ) {
 

@@ -14,7 +14,7 @@ Sidebar.Script = function ( editor ) {
 		editor.config.setKey( 'ui/sidebar/script/collapsed', boolean );
 
 	} );
-	container.setDisplay( 'none' );
+	
 
 	container.addStatic( new UI.Text( 'Script' ).setTextTransform( 'uppercase' ) );
 	container.add( new UI.Break() );
@@ -107,13 +107,13 @@ Sidebar.Script = function ( editor ) {
 
 		if ( object !== null ) {
 
-			container.setDisplay( 'block' );
+			// container.setDisplay( 'block' );
 
 			update();
 
 		} else {
 
-			container.setDisplay( 'none' );
+			//container.setDisplay( 'none' );
 
 		}
 

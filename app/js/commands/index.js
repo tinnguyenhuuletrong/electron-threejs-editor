@@ -18,3 +18,26 @@ import { SetSceneCommand } from './SetSceneCommand.js'
 import { SetScriptValueCommand } from './SetScriptValueCommand.js'
 import { SetUuidCommand } from './SetUuidCommand.js'
 import { SetValueCommand } from './SetValueCommand.js'
+
+export { 
+	AddObjectCommand,
+	AddScriptCommand,
+	MoveObjectCommand,
+	MultiCmdsCommand,
+	RemoveObjectCommand,
+	RemoveScriptCommand,
+	SetColorCommand,
+	SetGeometryCommand,
+	SetGeometryValueCommand,
+	SetMaterialColorCommand,
+	SetMaterialCommand,
+	SetMaterialMapCommand,
+	SetMaterialValueCommand,
+	SetPositionCommand,
+	SetRotationCommand,
+	SetScaleCommand,
+	SetSceneCommand,
+	SetScriptValueCommand,
+	SetUuidCommand,
+	SetValueCommand
+}

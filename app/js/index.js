@@ -1,13 +1,25 @@
 // 3rd libs
 window.html2canvas = require('./libs/html2canvas.js')
-window.System = require('./libs/system/System.js')
+window.System = require('./libs/system/System.js').System
 window.signals = require('./libs/signal/signal.js')
 window.esprima = require('./libs/esprima/esprima.js')
 window.jsonlint = require('./libs/jsonlint.js')
+window.CodeMirror = require('./libs/codemirror/codemirror.js')
 
+// THREE extensions
 import './libs/three.html.js'
+import './utils/controls/EditorControls.js'
+import './utils/controls/TransformControls.js'
 
+import './utils/renderers/RaytracingRenderer.js'
+import './utils/renderers/CanvasRenderer.js'
+import './utils/renderers/Projector.js'
+import './utils/renderers/SoftwareRenderer.js'
+import './utils/renderers/SVGRenderer.js'
 
+import './utils/MorphAnimMesh.js'
+
+// Editor Core
 export { Command } from './Command.js'
 export { Config } from './Config.js'
 export { Editor } from './Editor.js'
@@ -64,6 +76,8 @@ import './Sidebar.Geometry.TeapotBufferGeometry.js'
 import './Sidebar.Geometry.TorusGeometry.js'
 import './Sidebar.Geometry.TorusKnotGeometry.js'
 
+// Sidebar
 export { Sidebar } from './Sidebar'
 
+// Commands
 export * from './commands'
