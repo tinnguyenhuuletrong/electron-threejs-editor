@@ -1,6 +1,7 @@
 /**
  * @author mrdoob / http://mrdoob.com/
  */
+import JSZip from 'jszip'
 import { Menubar } from "./Menubar"
 
 Menubar.File = function ( editor ) {
