@@ -1,10 +1,12 @@
 /**
  * @author mrdoob / http://mrdoob.com/
  */
-import { Sidebar } from "./Sidebar"
+import {
+	Sidebar
+} from "./Sidebar"
 
 
-Sidebar.Animation = function ( editor ) {
+Sidebar.Animation = function(editor) {
 
 	var signals = editor.signals;
 
@@ -12,37 +14,37 @@ Sidebar.Animation = function ( editor ) {
 	var possibleAnimations = {};
 
 	var container = new UI.CollapsiblePanel();
-	container.setCollapsed( editor.config.getKey( 'ui/sidebar/animation/collapsed' ) );
-	container.onCollapsedChange( function ( boolean ) {
+	container.setCollapsed(editor.config.getKey('ui/sidebar/animation/collapsed'));
+	container.onCollapsedChange(function(boolean) {
 
-		editor.config.setKey( 'ui/sidebar/animation/collapsed', boolean );
+		editor.config.setKey('ui/sidebar/animation/collapsed', boolean);
 
-	} );
-	
+	});
 
-	container.addStatic( new UI.Text( 'Animation' ).setTextTransform( 'uppercase' ) );
-	container.add( new UI.Break() );
+
+	container.addStatic(new UI.Text('Animation').setTextTransform('uppercase'));
+	container.add(new UI.Break());
 
 	var animationsRow = new UI.Row();
-	container.add( animationsRow );
+	container.add(animationsRow);
 
-	
+
 
 	var animations = {};
 
-	signals.objectAdded.add( function ( object ) {
+	signals.objectAdded.add(function(object) {
 
-		object.traverse( function ( child ) {
+		object.traverse(function(child) {
 
-			if ( child instanceof THREE.SkinnedMesh ) {
+			if (child instanceof THREE.SkinnedMesh) {
 
 				var material = child.material;
 
-				if ( material instanceof THREE.MultiMaterial ) {
+				if (material instanceof THREE.MultiMaterial) {
 
-					for ( var i = 0; i < material.materials.length; i ++ ) {
+					for (var i = 0; i < material.materials.length; i++) {
 
-						material.materials[ i ].skinning = true;
+						material.materials[i].skinning = true;
 
 					}
 
@@ -52,64 +54,84 @@ Sidebar.Animation = function ( editor ) {
 
 				}
 
-				animations[ child.id ] = new THREE.Animation( child, child.geometry.animation );
+				//animations[ child.id ] = new THREE.Animation( child, child.geometry.animation );
 
-			} else if ( child instanceof THREE.MorphAnimMesh ) {
+				const animationClips = child.geometry.animations || []
+				child.mixer = new THREE.AnimationMixer(child)
 
-				var animation = new THREE.MorphAnimation( child );
+				THREE.AnimationHandler.add(child.mixer)
+
+				if (animations[child.id] == null)
+					animations[child.id] = {}
+
+				animationClips.forEach((itm, i) => {
+					animations[child.id][itm.name] = child.mixer.clipAction(itm)
+				})
+
+			} else if (child instanceof THREE.MorphAnimMesh) {
+
+				var animation = new THREE.MorphAnimation(child);
 				animation.duration = 30;
 
 				// temporal hack for THREE.AnimationHandler
 				animation._play = animation.play;
-				animation.play = function () {
+				animation.play = function() {
 					this._play();
-					THREE.AnimationHandler.play( this );
+					THREE.AnimationHandler.play(this);
 				};
-				animation.resetBlendWeights = function () {};
-				animation.stop = function () {
+				animation.resetBlendWeights = function() {};
+				animation.stop = function() {
 					this.pause();
-					THREE.AnimationHandler.stop( this );
+					THREE.AnimationHandler.stop(this);
 				};
 
-				animations[ child.id ] = animation;
+				if (animations[child.id] == null)
+					animations[child.id] = {}
+
+				animations[child.id]["default"] = animation;
 
 			}
 
-		} );
+		});
 
-	} );
+	});
 
-	signals.objectSelected.add( function ( object ) {
+	signals.editorCleared.add(function() {
+		THREE.AnimationHandler.clear()
+	})
+
+	signals.objectSelected.add(function(object) {
 
 		// container.setDisplay( 'none' );
 
-		if ( object instanceof THREE.SkinnedMesh || object instanceof THREE.MorphAnimMesh ) {
+		if (object instanceof THREE.SkinnedMesh || object instanceof THREE.MorphAnimMesh) {
 
 			animationsRow.clear();
 
-			var animation = animations[ object.id ];
+			var animation = animations[object.id] || {};
+			for (var key in animation) {
+				var playButton = new UI.Button('Play: ' + key).onClick(function() {
 
-			var playButton = new UI.Button( 'Play' ).onClick( function () {
+					animation[key].play();
 
-				animation.play();
+				});
+				animationsRow.add(playButton);
 
-			} );
-			animationsRow.add( playButton );
+				var pauseButton = new UI.Button('Stop').onClick(function() {
 
-			var pauseButton = new UI.Button( 'Stop' ).onClick( function () {
+					animation[key].stop();
 
-				animation.stop();
+				});
+				animationsRow.add(pauseButton);
+			}
 
-			} );
-			animationsRow.add( pauseButton );
-
-			container.setDisplay( 'block' );
+			container.setDisplay('block');
 
 		}
 
-	} );
+	});
 
-	
+
 
 	return container;
 

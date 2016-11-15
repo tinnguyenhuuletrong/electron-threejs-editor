@@ -1,3 +1,7 @@
+import './collada/Animation'
+import './collada/AnimationHandler'
+import './collada/KeyFrameAnimation'
+
 import './VTKLoader'
 import './VRMLLoader'
 import './UTF8Loader'

@@ -563,7 +563,7 @@ export var Viewport = function ( editor ) {
 
 		requestAnimationFrame( animate );
 
-		/*
+		
 
 		// animations
 
@@ -580,13 +580,13 @@ export var Viewport = function ( editor ) {
 					helper.update();
 
 				}
-
 			}
 
 		}
-		*/
+		
 
-		if ( vrEffect && vrEffect.isPresenting ) {
+		if ( THREE.AnimationHandler.animations.length > 0 || 
+			(vrEffect && vrEffect.isPresenting) ) {
 
 			render();
 

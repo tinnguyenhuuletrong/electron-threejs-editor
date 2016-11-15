@@ -24,7 +24,7 @@ console.log( 'SEA3D ' + SEA3D.getVersion() );
 SEA3D.Stream = function( buffer ) {
 
 	this.position = 0;
-	this.buffer = buffer || new ArrayBuffer();
+	this.buffer = buffer || new ArrayBuffer(0);
 
 };
 
