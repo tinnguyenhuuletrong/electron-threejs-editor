@@ -6,6 +6,7 @@ import { Euler } from '../math/Euler';
 import { Layers } from './Layers';
 import { Matrix3 } from '../math/Matrix3';
 import { _Math } from '../math/Math';
+import { AnimationClip } from '../animation/AnimationClip'
 
 /**
  * @author mrdoob / http://mrdoob.com/
@@ -651,6 +652,12 @@ Object.assign( Object3D.prototype, EventDispatcher.prototype, {
 			if ( textures.length > 0 ) output.textures = textures;
 			if ( images.length > 0 ) output.images = images;
 
+		}
+
+		if(this.animations && this.animations.length) {
+			object.animations = this.animations.map(itm =>{
+				return AnimationClip.toJSON(itm)
+			})
 		}
 
 		output.object = object;

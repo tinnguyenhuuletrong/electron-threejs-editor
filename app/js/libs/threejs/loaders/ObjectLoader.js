@@ -588,6 +588,7 @@ Object.assign( ObjectLoader.prototype, {
 
 					break;
 
+				case 'SkinnedMesh':
 				case 'Mesh':
 
 					var geometry = getGeometry( data.geometry );

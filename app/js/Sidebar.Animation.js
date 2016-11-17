@@ -109,20 +109,24 @@ Sidebar.Animation = function(editor) {
 			animationsRow.clear();
 
 			var animation = animations[object.id] || {};
-			for (var key in animation) {
-				var playButton = new UI.Button('Play: ' + key).onClick(function() {
+			for (let key in animation) {
+				let playButton = new UI.Button('Play: ' + key).onClick(function() {
 
 					animation[key].play();
 
 				});
 				animationsRow.add(playButton);
 
-				var pauseButton = new UI.Button('Stop').onClick(function() {
+				let pauseButton = new UI.Button('Stop').onClick(function() {
 
 					animation[key].stop();
 
 				});
 				animationsRow.add(pauseButton);
+
+				animationsRow.add(new UI.Break())
+
+				
 			}
 
 			container.setDisplay('block');

@@ -15,6 +15,7 @@ Number.prototype.format = function() {
 // Init Application components
 
 var editor = new Editor();
+window.editor = editor
 
 var viewport = new Viewport(editor);
 document.body.appendChild(viewport.dom);

@@ -1,4 +1,9 @@
-import { app, BrowserWindow, Menu, shell } from 'electron';
+import {
+  app,
+  BrowserWindow,
+  Menu,
+  shell
+} from 'electron';
 
 let menu;
 let template;
@@ -21,12 +26,11 @@ app.on('window-all-closed', () => {
 });
 
 
-const installExtensions = async () => {
+const installExtensions = async() => {
   if (process.env.NODE_ENV === 'development') {
     const installer = require('electron-devtools-installer'); // eslint-disable-line global-require
 
-    const extensions = [
-    ];
+    const extensions = [];
     const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
     for (const name of extensions) {
       try {
@@ -36,7 +40,7 @@ const installExtensions = async () => {
   }
 };
 
-app.on('ready', async () => {
+app.on('ready', async() => {
   await installExtensions();
 
   mainWindow = new BrowserWindow({
@@ -242,10 +246,22 @@ app.on('ready', async () => {
           mainWindow.toggleDevTools();
         }
       }] : [{
+        label: '&Reload',
+        accelerator: 'Ctrl+R',
+        click() {
+          mainWindow.webContents.reload();
+        }
+      }, {
         label: 'Toggle &Full Screen',
         accelerator: 'F11',
         click() {
           mainWindow.setFullScreen(!mainWindow.isFullScreen());
+        }
+      }, {
+        label: 'Toggle &Developer Tools',
+        accelerator: 'Alt+Ctrl+I',
+        click() {
+          mainWindow.toggleDevTools();
         }
       }]
     }, {
