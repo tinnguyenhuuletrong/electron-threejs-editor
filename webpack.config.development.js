@@ -18,11 +18,20 @@ export default validate(merge(baseConfig, {
   //devtool: 'cheap-module-eval-source-map',
   devtool: 'source-map',
 
-  entry: [
-    `webpack-hot-middleware/client?path=http://localhost:${port}/__webpack_hmr`,
-    'babel-polyfill',
-    './app/index'
-  ],
+  // entry: [
+  //   `webpack-hot-middleware/client?path=http://localhost:${port}/__webpack_hmr`,
+  //   'babel-polyfill',
+  //   './app/index'
+  // ],
+
+  entry: {
+    main: [
+        `webpack-hot-middleware/client?path=http://localhost:${port}/__webpack_hmr`,
+        'babel-polyfill',
+        './app/index'
+    ],
+    stdafx: './app/stdafx'
+  },
 
   output: {
     publicPath: `http://localhost:${port}/dist/`

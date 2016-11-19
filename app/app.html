@@ -20,15 +20,27 @@
     <link rel="stylesheet" href="js/libs/codemirror/codemirror.css">
     <link rel="stylesheet" href="js/libs/codemirror/theme/monokai.css">
 
+     <script>
+      {
+        const script = document.createElement('script');
+        const port = process.env.PORT || 3000;
+        script.src = (process.env.HOT)
+          ? 'http://localhost:' + port + '/dist/stdafx.bundle.js'
+          : './dist/stdafx.bundle.js';
+        document.write(script.outerHTML);
+      }
+    </script>
+
     <script>
       {
         const script = document.createElement('script');
         const port = process.env.PORT || 3000;
         script.src = (process.env.HOT)
-          ? 'http://localhost:' + port + '/dist/bundle.js'
-          : './dist/bundle.js';
+          ? 'http://localhost:' + port + '/dist/main.bundle.js'
+          : './dist/main.bundle.js';
         document.write(script.outerHTML);
       }
     </script>
+   
   </body>
 </html>

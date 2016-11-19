@@ -13,10 +13,13 @@ import baseConfig from './webpack.config.base';
 const config = validate(merge(baseConfig, {
   devtool: 'cheap-module-source-map',
 
-  entry: [
-    'babel-polyfill',
-    './app/index'
-  ],
+  entry: {
+    main: [
+      'babel-polyfill',
+      './app/index'
+    ],
+    stdafx: './app/stdafx'
+  },
 
   output: {
     path: path.join(__dirname, 'app/dist'),

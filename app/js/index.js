@@ -1,11 +1,3 @@
-// 3rd libs
-window.html2canvas = require('./libs/html2canvas.js')
-window.System = require('./libs/system/System.js').System
-window.signals = require('./libs/signal/signal.js')
-window.esprima = require('./libs/esprima/esprima.js')
-window.jsonlint = require('./libs/jsonlint.js')
-window.CodeMirror = require('./libs/codemirror/codemirror.js')
-
 // THREE extensions
 import './libs/three.html.js'
 import './utils/controls/EditorControls.js'
