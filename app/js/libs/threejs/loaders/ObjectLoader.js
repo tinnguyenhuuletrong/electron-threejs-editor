@@ -318,7 +318,6 @@ Object.assign( ObjectLoader.prototype, {
 				geometry.uuid = data.uuid;
 
 				if ( data.name !== undefined ) geometry.name = data.name;
-
 				geometries[ data.uuid ] = geometry;
 
 			}
@@ -603,6 +602,9 @@ Object.assign( ObjectLoader.prototype, {
 
 						object = new SkinnedMesh( geometry, material );
 
+						this.attachDummy(data, object, geometries, materials)
+						data.children = []
+
 					} else {
 
 						object = new Mesh( geometry, material );
@@ -696,6 +698,11 @@ Object.assign( ObjectLoader.prototype, {
 
 			}
 
+			if (data.animations != undefined) {
+				object.animations = this.parseAnimations( data.animations );
+				object.geometry.animations = object.animations
+			}
+
 			if ( data.type === 'LOD' ) {
 
 				var levels = data.levels;
@@ -774,19 +781,42 @@ ObjectLoader.prototype.boneTraverse = function(root, func) {
 		const dummy = {
 			type: itm.type,
 			name: itm.name,
+			parentName: root.name,
 			parent: root.uuid,
 			uuid: itm.uuid,
 			position: new Vector3(),
 			quaternion: new Quaternion(),
-			scale: new Vector3( 1, 1, 1 )
+			scale: new Vector3( 1, 1, 1 ),
+			_rawData: itm
 		}
 		matrix.fromArray( itm.matrix );
 		matrix.decompose( dummy.position, dummy.quaternion, dummy.scale );
 
 
 		func && func(dummy)
+	}
+
+	for (var i = 0; i < children.length; i++) {
+		const itm = children[i]
 		this.boneTraverse(itm, func)
 	}
+};
+
+ObjectLoader.prototype.attachDummy = function(object, root, geometries, materials ) {
+	this.boneTraverse(object, node => {
+		if(node.type == "Bone")
+			return
+
+		const parentName = node.parentName
+		const parentNode = root.getObjectByProperty("name", parentName)
+
+		if(!parentNode) 
+			return
+
+		console.log("[ObjectLoader] attach childNode ", node.type, parentName, parentName)
+
+		parentNode.add(this.parseObject( node._rawData, geometries, materials ))
+	})
 };
 
 //----------------------------------------------------//

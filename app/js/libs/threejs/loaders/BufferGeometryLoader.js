@@ -96,6 +96,12 @@ Object.assign( BufferGeometryLoader.prototype, {
 
 		}
 
+		var bones = json.data.bones
+
+		if (bones != null) {
+			geometry.bones = bones
+		}
+
 		return geometry;
 
 	}

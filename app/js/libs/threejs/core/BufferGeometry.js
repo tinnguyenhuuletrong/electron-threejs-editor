@@ -965,6 +965,17 @@ Object.assign( BufferGeometry.prototype, EventDispatcher.prototype, {
 
 		}
 
+		if (this.bones != null)
+			data.data.bones = this.bones.map(itm => {
+				return {
+					name: itm.name,
+					pos: itm.pos,
+					rotq: itm.rotq,
+					scl: itm.scl,
+					parent: itm.parent
+				}
+			})
+
 		return data;
 
 	},
