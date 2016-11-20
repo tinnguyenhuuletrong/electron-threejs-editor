@@ -9,7 +9,6 @@ import './utils/renderers/Projector.js'
 import './utils/renderers/SoftwareRenderer.js'
 import './utils/renderers/SVGRenderer.js'
 
-import './utils/MorphAnimMesh.js'
 import './utils/loaders/index.js'
 
 

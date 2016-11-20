@@ -12,6 +12,7 @@ import { LineSegments } from '../objects/LineSegments';
 import { LOD } from '../objects/LOD';
 import { Mesh } from '../objects/Mesh';
 import { SkinnedMesh } from '../objects/SkinnedMesh';
+import { MorphAnimMesh } from '../animation/MorphAnimMesh'
 import { Bone } from '../objects/Bone';
 import { Fog } from '../scenes/Fog';
 import { FogExp2 } from '../scenes/FogExp2';
@@ -611,6 +612,13 @@ Object.assign( ObjectLoader.prototype, {
 
 					}
 
+					break;
+
+				case 'MorphAnimMesh':
+						console.error("Todo Implements")
+						var geometry = getGeometry( data.geometry );
+						var material = getMaterial( data.material );
+						object = new MorphAnimMesh( geometry, material )
 					break;
 
 				case 'LOD':

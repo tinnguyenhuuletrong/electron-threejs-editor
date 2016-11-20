@@ -32,66 +32,12 @@ Sidebar.Animation = function(editor) {
 
 	var animations = {};
 
+	this.animations = animations
+	var self = this
 	signals.objectAdded.add(function(object) {
-
+		self.scan(object)
 		object.traverse(function(child) {
-
-			if (child instanceof THREE.SkinnedMesh) {
-
-				var material = child.material;
-
-				if (material instanceof THREE.MultiMaterial) {
-
-					for (var i = 0; i < material.materials.length; i++) {
-
-						material.materials[i].skinning = true;
-
-					}
-
-				} else {
-
-					child.material.skinning = true;
-
-				}
-
-				//animations[ child.id ] = new THREE.Animation( child, child.geometry.animation );
-
-				const animationClips = child.geometry.animations || []
-				child.mixer = new THREE.AnimationMixer(child)
-
-				THREE.AnimationHandler.add(child.mixer)
-
-				if (animations[child.id] == null)
-					animations[child.id] = {}
-
-				animationClips.forEach((itm, i) => {
-					animations[child.id][itm.name] = child.mixer.clipAction(itm)
-				})
-
-			} else if (child instanceof THREE.MorphAnimMesh) {
-
-				var animation = new THREE.MorphAnimation(child);
-				animation.duration = 30;
-
-				// temporal hack for THREE.AnimationHandler
-				animation._play = animation.play;
-				animation.play = function() {
-					this._play();
-					THREE.AnimationHandler.play(this);
-				};
-				animation.resetBlendWeights = function() {};
-				animation.stop = function() {
-					this.pause();
-					THREE.AnimationHandler.stop(this);
-				};
-
-				if (animations[child.id] == null)
-					animations[child.id] = {}
-
-				animations[child.id]["default"] = animation;
-
-			}
-
+			self.scan(child)
 		});
 
 	});
@@ -104,7 +50,7 @@ Sidebar.Animation = function(editor) {
 
 		// container.setDisplay( 'none' );
 
-		if (object instanceof THREE.SkinnedMesh || object instanceof THREE.MorphAnimMesh) {
+		if (object instanceof THREE.SkinnedMesh || object instanceof THREE.MorphAnimMesh || object instanceof THREE.SEA3D.VertexAnimationMesh) {
 
 			animationsRow.clear();
 
@@ -126,7 +72,7 @@ Sidebar.Animation = function(editor) {
 
 				animationsRow.add(new UI.Break())
 
-				
+
 			}
 
 			container.setDisplay('block');
@@ -140,3 +86,64 @@ Sidebar.Animation = function(editor) {
 	return container;
 
 }
+
+Sidebar.Animation.prototype.scan = function(child) {
+	if (child instanceof THREE.SkinnedMesh) {
+
+		var material = child.material;
+
+		if (material instanceof THREE.MultiMaterial) {
+
+			for (var i = 0; i < material.materials.length; i++) {
+
+				material.materials[i].skinning = true;
+
+			}
+
+		} else {
+
+			child.material.skinning = true;
+
+		}
+
+		//animations[ child.id ] = new THREE.Animation( child, child.geometry.animation );
+
+		const animationClips = child.geometry.animations || []
+		child.mixer = new THREE.AnimationMixer(child)
+
+		THREE.AnimationHandler.add(child.mixer)
+
+		if (this.animations[child.id] == null)
+			this.animations[child.id] = {}
+
+		animationClips.forEach((itm, i) => {
+			this.animations[child.id][itm.name] = child.mixer.clipAction(itm)
+		})
+
+	} else if (child instanceof THREE.MorphAnimMesh || child instanceof THREE.SEA3D.VertexAnimationMesh) {
+
+		const animationClips = child.geometry.animations || []
+		animationClips.forEach((itm, i) => {
+			var animation = new THREE.MorphAnimation(child);
+			animation.duration = itm.duration;
+			animation.frames = itm.tracks.length
+
+			THREE.AnimationHandler.add(animation)
+
+			// temporal hack for THREE.AnimationHandler
+			animation._play = animation.play;
+			animation.play = function() {
+				this._play();
+			};
+			animation.resetBlendWeights = function() {};
+			animation.stop = function() {
+				this.pause();
+			};
+
+			if (this.animations[child.id] == null)
+				this.animations[child.id] = {}
+
+			this.animations[child.id][itm.name] = animation;
+		})
+	}
+};
