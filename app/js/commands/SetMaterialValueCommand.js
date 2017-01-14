@@ -17,9 +17,14 @@ export var SetMaterialValueCommand = function ( object, attributeName, newValue 
 	this.type = 'SetMaterialValueCommand';
 	this.name = 'Set Material.' + attributeName;
 	this.updatable = true;
+	this.mat = object.material
+
+	if(this.mat.materials || object._subMatID != null) {
+		this.mat = this.mat.materials.find(itm => { return itm.uuid == object._subMatID })
+	}
 
 	this.object = object;
-	this.oldValue = ( object !== undefined ) ? object.material[ attributeName ] : undefined;
+	this.oldValue = ( object !== undefined ) ? this.mat[ attributeName ] : undefined;
 	this.newValue = newValue;
 	this.attributeName = attributeName;
 
@@ -29,19 +34,19 @@ SetMaterialValueCommand.prototype = {
 
 	execute: function () {
 
-		this.object.material[ this.attributeName ] = this.newValue;
-		this.object.material.needsUpdate = true;
+		this.mat[ this.attributeName ] = this.newValue;
+		this.mat.needsUpdate = true;
 		this.editor.signals.objectChanged.dispatch( this.object );
-		this.editor.signals.materialChanged.dispatch( this.object.material );
+		this.editor.signals.materialChanged.dispatch( this.mat );
 
 	},
 
 	undo: function () {
 
-		this.object.material[ this.attributeName ] = this.oldValue;
-		this.object.material.needsUpdate = true;
+		this.mat[ this.attributeName ] = this.oldValue;
+		this.mat.needsUpdate = true;
 		this.editor.signals.objectChanged.dispatch( this.object );
-		this.editor.signals.materialChanged.dispatch( this.object.material );
+		this.editor.signals.materialChanged.dispatch( this.mat );
 
 	},
 

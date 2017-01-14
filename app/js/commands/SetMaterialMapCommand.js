@@ -16,9 +16,15 @@ export var SetMaterialMapCommand = function ( object, mapName, newMap ) {
 	this.type = 'SetMaterialMapCommand';
 	this.name = 'Set Material.' + mapName;
 
+	this.mat = object.material
+
+	if(this.mat.materials || object._subMatID != null) {
+		this.mat = this.mat.materials.find(itm => { return itm.uuid == object._subMatID })
+	}
+
 	this.object = object;
 	this.mapName = mapName;
-	this.oldMap = ( object !== undefined ) ? object.material[ mapName ] : undefined;
+	this.oldMap = ( object !== undefined ) ? this.mat[ mapName ] : undefined;
 	this.newMap = newMap;
 
 };
@@ -27,17 +33,17 @@ SetMaterialMapCommand.prototype = {
 
 	execute: function () {
 
-		this.object.material[ this.mapName ] = this.newMap;
-		this.object.material.needsUpdate = true;
-		this.editor.signals.materialChanged.dispatch( this.object.material );
+		this.mat[ this.mapName ] = this.newMap;
+		this.mat.needsUpdate = true;
+		this.editor.signals.materialChanged.dispatch( this.mat );
 
 	},
 
 	undo: function () {
 
-		this.object.material[ this.mapName ] = this.oldMap;
-		this.object.material.needsUpdate = true;
-		this.editor.signals.materialChanged.dispatch( this.object.material );
+		this.mat[ this.mapName ] = this.oldMap;
+		this.mat.needsUpdate = true;
+		this.editor.signals.materialChanged.dispatch( this.mat );
 
 	},
 

@@ -18,9 +18,15 @@ export var SetMaterialColorCommand = function ( object, attributeName, newValue 
 	this.name = 'Set Material.' + attributeName;
 	this.updatable = true;
 
+	this.mat = object.material
+
+	if(this.mat.materials || object._subMatID != null) {
+		this.mat = this.mat.materials.find(itm => { return itm.uuid == object._subMatID })
+	}
+
 	this.object = object;
 	this.attributeName = attributeName;
-	this.oldValue = ( object !== undefined ) ? this.object.material[ this.attributeName ].getHex() : undefined;
+	this.oldValue = ( object !== undefined ) ? this.mat[ this.attributeName ].getHex() : undefined;
 	this.newValue = newValue;
 
 };
@@ -29,15 +35,15 @@ SetMaterialColorCommand.prototype = {
 
 	execute: function () {
 
-		this.object.material[ this.attributeName ].setHex( this.newValue );
-		this.editor.signals.materialChanged.dispatch( this.object.material );
+		this.mat[ this.attributeName ].setHex( this.newValue );
+		this.editor.signals.materialChanged.dispatch( this.mat );
 
 	},
 
 	undo: function () {
 
-		this.object.material[ this.attributeName ].setHex( this.oldValue );
-		this.editor.signals.materialChanged.dispatch( this.object.material );
+		this.mat[ this.attributeName ].setHex( this.oldValue );
+		this.editor.signals.materialChanged.dispatch( this.mat );
 
 	},
 
