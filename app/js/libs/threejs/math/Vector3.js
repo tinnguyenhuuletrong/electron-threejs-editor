@@ -79,7 +79,7 @@ Vector3.prototype = {
 			default: throw new Error( 'index is out of range: ' + index );
 
 		}
-		
+
 		return this;
 
 	},
@@ -685,6 +685,16 @@ Vector3.prototype = {
 
 	},
 
+	setFromCylindrical: function( c ) {
+
+		this.x = c.radius * Math.sin( c.theta );
+		this.y = c.y;
+		this.z = c.radius * Math.cos( c.theta );
+
+		return this;
+
+	},
+
 	setFromMatrixPosition: function ( m ) {
 
 		return this.setFromMatrixColumn( m, 3 );
@@ -710,7 +720,7 @@ Vector3.prototype = {
 		if ( typeof m === 'number' ) {
 
 			console.warn( 'THREE.Vector3: setFromMatrixColumn now expects ( matrix, index ).' );
-			var temp = m
+			var temp = m;
 			m = index;
 			index = temp;
 
@@ -753,13 +763,15 @@ Vector3.prototype = {
 
 	fromAttribute: function ( attribute, index, offset ) {
 
-		if ( offset === undefined ) offset = 0;
+		if ( offset !== undefined ) {
 
-		index = index * attribute.itemSize + offset;
+			console.warn( 'THREE.Vector3: offset has been removed from .fromAttribute().' );
 
-		this.x = attribute.array[ index ];
-		this.y = attribute.array[ index + 1 ];
-		this.z = attribute.array[ index + 2 ];
+		}
+
+		this.x = attribute.getX( index );
+		this.y = attribute.getY( index );
+		this.z = attribute.getZ( index );
 
 		return this;
 

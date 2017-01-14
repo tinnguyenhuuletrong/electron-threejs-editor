@@ -313,25 +313,25 @@ THREE.PLYLoader.prototype = {
 			// mandatory buffer data
 
 			geometry.setIndex( ( buffer.indices.length > 65535 ? THREE.Uint32Attribute : THREE.Uint16Attribute )( buffer.indices, 1 ) );
-			geometry.addAttribute( 'position', THREE.Float32Attribute( buffer.vertices, 3 ) );
+			geometry.addAttribute( 'position', THREE.Float32BufferAttribute( buffer.vertices, 3 ) );
 
 			// optional buffer data
 
 			if ( buffer.normals.length > 0 ) {
 
-				geometry.addAttribute( 'normal', THREE.Float32Attribute( buffer.normals, 3 ) );
+				geometry.addAttribute( 'normal', THREE.Float32BufferAttribute( buffer.normals, 3 ) );
 
 			}
 
 			if ( buffer.uvs.length > 0 ) {
 
-				geometry.addAttribute( 'uv', THREE.Float32Attribute( buffer.uvs, 2 ) );
+				geometry.addAttribute( 'uv', THREE.Float32BufferAttribute( buffer.uvs, 2 ) );
 
 			}
 
 			if ( buffer.colors.length > 0 ) {
 
-				geometry.addAttribute( 'color', THREE.Float32Attribute( buffer.colors, 3 ) );
+				geometry.addAttribute( 'color', THREE.Float32BufferAttribute( buffer.colors, 3 ) );
 
 			}
 

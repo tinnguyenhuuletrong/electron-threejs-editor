@@ -1,8 +1,6 @@
 import { TextureMapping, TextureWrapping, TextureFilter } from '../constants';
 import { Color } from '../math/Color';
 import { Matrix4 } from '../math/Matrix4';
-import { Vector3 } from '../math/Vector3';
-import { Quaternion } from '../math/Quaternion';
 import { Object3D } from '../core/Object3D';
 import { Group } from '../objects/Group';
 import { Sprite } from '../objects/Sprite';
@@ -12,8 +10,6 @@ import { LineSegments } from '../objects/LineSegments';
 import { LOD } from '../objects/LOD';
 import { Mesh } from '../objects/Mesh';
 import { SkinnedMesh } from '../objects/SkinnedMesh';
-import { MorphAnimMesh } from '../animation/MorphAnimMesh'
-import { Bone } from '../objects/Bone';
 import { Fog } from '../scenes/Fog';
 import { FogExp2 } from '../scenes/FogExp2';
 import { HemisphereLight } from '../lights/HemisphereLight';
@@ -38,10 +34,11 @@ import * as Geometries from '../geometries/Geometries';
  * @author mrdoob / http://mrdoob.com/
  */
 
-function ObjectLoader ( manager ) {
+function ObjectLoader( manager ) {
 
 	this.manager = ( manager !== undefined ) ? manager : DefaultLoadingManager;
 	this.texturePath = '';
+
 }
 
 Object.assign( ObjectLoader.prototype, {
@@ -109,7 +106,7 @@ Object.assign( ObjectLoader.prototype, {
 
 		} );
 
-		var textures  = this.parseTextures( json.textures, images );
+		var textures = this.parseTextures( json.textures, images );
 		var materials = this.parseMaterials( json.materials, textures );
 
 		var object = this.parseObject( json.object, geometries, materials );
@@ -319,6 +316,7 @@ Object.assign( ObjectLoader.prototype, {
 				geometry.uuid = data.uuid;
 
 				if ( data.name !== undefined ) geometry.name = data.name;
+
 				geometries[ data.uuid ] = geometry;
 
 			}
@@ -590,21 +588,14 @@ Object.assign( ObjectLoader.prototype, {
 
 					break;
 
-				case 'SkinnedMesh':
 				case 'Mesh':
 
 					var geometry = getGeometry( data.geometry );
 					var material = getMaterial( data.material );
-					const hasBone = this.hasBoneNode(data)
-					if(hasBone) {
-						this.parseBoneNode(data, geometry)
-					}
+
 					if ( geometry.bones && geometry.bones.length > 0 ) {
 
 						object = new SkinnedMesh( geometry, material );
-
-						this.attachDummy(data, object, geometries, materials)
-						data.children = []
 
 					} else {
 
@@ -612,13 +603,6 @@ Object.assign( ObjectLoader.prototype, {
 
 					}
 
-					break;
-
-				case 'MorphAnimMesh':
-						console.error("Todo Implements")
-						var geometry = getGeometry( data.geometry );
-						var material = getMaterial( data.material );
-						object = new MorphAnimMesh( geometry, material )
 					break;
 
 				case 'LOD':
@@ -657,6 +641,10 @@ Object.assign( ObjectLoader.prototype, {
 					object = new Group();
 
 					break;
+
+				case 'SkinnedMesh':
+
+					console.warn( 'THREE.ObjectLoader.parseObject() does not support SkinnedMesh type. Instantiates Object3D instead.' );
 
 				default:
 
@@ -706,11 +694,6 @@ Object.assign( ObjectLoader.prototype, {
 
 			}
 
-			if (data.animations != undefined) {
-				object.animations = this.parseAnimations( data.animations );
-				object.geometry.animations = object.animations
-			}
-
 			if ( data.type === 'LOD' ) {
 
 				var levels = data.levels;
@@ -738,99 +721,5 @@ Object.assign( ObjectLoader.prototype, {
 
 } );
 
-//----------------------------------------------------//
-// TTin append
-//	Reconstruct Bone from children nodes
-//	Begin
-//----------------------------------------------------//
-
-ObjectLoader.prototype.hasBoneNode = function(object) {
-	const childrens = object.children || []
-	return childrens.filter(itm => itm.type == "Bone").length > 0
-};
-
-ObjectLoader.prototype.parseBoneNode = function(object, geometry) {
-
-	// if bones exited (maybe in mordern exporter). Skip this process
-	if(geometry.bones)
-		return
-
-	console.log("[ObjectLoader] trying to reconstruct bones")
-	const bones = []
-	this.boneTraverse(object,  node => {
-		if(node.type == "Bone") {
-			let bone = {}
-
-			bone.name = node.name
-			bone.uuid = node.uuid
-			bone.parent = bones.findIndex(itm => itm.uuid == node.parent)
-
-			bone.pos = []
-			node.position.toArray(bone.pos, 0)
-
-			bone.rotq = []
-			node.quaternion.toArray(bone.rotq, 0)
-
-			bone.scl = []
-			node.scale.toArray(bone.scl, 0)
-
-			bones.push(bone)
-		}
-	})
-
-	geometry.bones = bones
-};
-
-ObjectLoader.prototype.boneTraverse = function(root, func) {
-	const children = root.children || []
-	for (var i = 0; i < children.length; i++) {
-		const itm = children[i]
-		const matrix = new Matrix4()
-		const dummy = {
-			type: itm.type,
-			name: itm.name,
-			parentName: root.name,
-			parent: root.uuid,
-			uuid: itm.uuid,
-			position: new Vector3(),
-			quaternion: new Quaternion(),
-			scale: new Vector3( 1, 1, 1 ),
-			_rawData: itm
-		}
-		matrix.fromArray( itm.matrix );
-		matrix.decompose( dummy.position, dummy.quaternion, dummy.scale );
-
-
-		func && func(dummy)
-	}
-
-	for (var i = 0; i < children.length; i++) {
-		const itm = children[i]
-		this.boneTraverse(itm, func)
-	}
-};
-
-ObjectLoader.prototype.attachDummy = function(object, root, geometries, materials ) {
-	this.boneTraverse(object, node => {
-		if(node.type == "Bone")
-			return
-
-		const parentName = node.parentName
-		const parentNode = root.getObjectByProperty("name", parentName)
-
-		if(!parentNode) 
-			return
-
-		console.log("[ObjectLoader] attach childNode ", node.type, parentName, parentName)
-
-		parentNode.add(this.parseObject( node._rawData, geometries, materials ))
-	})
-};
-
-//----------------------------------------------------//
-// TTin append
-//	Reconstruct Bone from children nodes
-//	End
-//----------------------------------------------------//
 
 export { ObjectLoader };
