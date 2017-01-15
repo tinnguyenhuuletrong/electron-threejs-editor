@@ -1337,6 +1337,7 @@ Sidebar.Material = function(editor) {
 			currentObject = object;
 			multipleMaterialChoices.setOptions({})
 			self.selectedMat = null
+			currentObject._subMatID = null
 
 			if (currentObject && currentObject.material && currentObject.material.type == "MultiMaterial")
 				multipleMaterialChoices.setDisplay("")
@@ -1355,8 +1356,8 @@ Sidebar.Material = function(editor) {
 
 	});
 
-	signals.materialChanged.add(function() {
-
+	signals.materialChanged.add(function( mat ) {
+		self.selectedMat = mat
 		refreshUI(null, self.selectedMat)
 
 	});
