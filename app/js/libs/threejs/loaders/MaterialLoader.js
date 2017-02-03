@@ -51,7 +51,9 @@ Object.assign( MaterialLoader.prototype, {
 
 		}
 
-		var material = new Materials[ json.type ]();
+		const type = json.type || "MeshBasicMaterial"
+
+		var material = new Materials[ type ]();
 
 		if ( json.uuid !== undefined ) material.uuid = json.uuid;
 		if ( json.name !== undefined ) material.name = json.name;

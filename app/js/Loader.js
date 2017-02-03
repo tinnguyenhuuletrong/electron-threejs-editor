@@ -515,6 +515,12 @@ export var Loader = function(editor) {
 
 				if (geometry.animation && geometry.animation.hierarchy) {
 
+					material.skinning = true
+					mesh = new THREE.SkinnedMesh(geometry, material);
+
+				} if ( geometry.animations ) {
+					
+					material.skinning = true
 					mesh = new THREE.SkinnedMesh(geometry, material);
 
 				} else {
