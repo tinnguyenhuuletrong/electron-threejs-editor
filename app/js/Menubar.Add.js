@@ -2,6 +2,9 @@
  * @author mrdoob / http://mrdoob.com/
  */
 import { Menubar } from "./Menubar"
+import skyShaderVer from '../resources/shader/sky/skyver.glsl'
+import skyShaderFrag from '../resources/shader/sky/skyfrag.glsl'
+
 
 Menubar.Add = function ( editor ) {
 
@@ -411,6 +414,47 @@ Menubar.Add = function ( editor ) {
 		camera.name = 'PerspectiveCamera ' + ( ++ cameraCount );
 
 		editor.execute( new AddObjectCommand( camera ) );
+
+	} );
+	options.add( option );
+
+	//
+
+	options.add( new UI.HorizontalRule() );
+
+	// Sky Dome
+
+	var option = new UI.Row();
+	option.setClass( 'option' );
+	option.setTextContent( 'Sky Dome' );
+	option.onClick( function() {
+
+		// SKYDOME
+		var uniforms = {
+			topColor: {
+				value: new THREE.Color(0x0077ff)
+			},
+			bottomColor: {
+				value: new THREE.Color(0xffffff)
+			},
+			offset: {
+				value: 33
+			},
+			exponent: {
+				value: 0.6
+			}
+		};
+		var skyGeo = new THREE.SphereGeometry(4000, 32, 15);
+		var skyMat = new THREE.ShaderMaterial({
+			vertexShader: skyShaderVer,
+			fragmentShader: skyShaderFrag,
+			uniforms: uniforms,
+			side: THREE.BackSide
+		});
+
+		var sky = new THREE.Mesh(skyGeo, skyMat);
+		sky.name = "SkyDome"
+		editor.execute( new AddObjectCommand( sky ) );
 
 	} );
 	options.add( option );
