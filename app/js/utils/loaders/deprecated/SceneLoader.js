@@ -940,6 +940,8 @@ THREE.SceneLoader.prototype = {
 
 							textureCallback();
 
+						}, _ => {}, err => {
+							textureCallback();
 						} );
 
 					} )( texture )
