@@ -1020,6 +1020,15 @@ Object.assign( Geometry.prototype, EventDispatcher.prototype, {
 		var uvs = [];
 		var uvsHash = {};
 
+		// Now max support 2 UV
+		var numUv = Math.min(this.faceVertexUvs.length, 2)
+
+		// Alocate Uvs
+		for (let i = 0; i < numUv; i++) {
+			uvs.push([])
+			uvsHash[i] = {}
+		}
+
 		for ( var i = 0; i < this.faces.length; i ++ ) {
 
 			var face = this.faces[ i ];
@@ -1049,14 +1058,16 @@ Object.assign( Geometry.prototype, EventDispatcher.prototype, {
 
 			if ( hasFaceVertexUv ) {
 
-				var faceVertexUvs = this.faceVertexUvs[ 0 ][ i ];
-
-				faces.push(
-					getUvIndex( faceVertexUvs[ 0 ] ),
-					getUvIndex( faceVertexUvs[ 1 ] ),
-					getUvIndex( faceVertexUvs[ 2 ] )
-				);
-
+				// TTin: Export multiple UV
+				for(let k=0; k < numUv; k++) {
+					var faceVertexUvs = this.faceVertexUvs[ k ][ i ];
+					faces.push(
+						getUvIndex( faceVertexUvs[ 0 ] , k),
+						getUvIndex( faceVertexUvs[ 1 ] , k),
+						getUvIndex( faceVertexUvs[ 2 ] , k)
+					);
+				}
+				
 			}
 
 			if ( hasFaceNormal ) {
@@ -1137,20 +1148,21 @@ Object.assign( Geometry.prototype, EventDispatcher.prototype, {
 
 		}
 
-		function getUvIndex( uv ) {
+		function getUvIndex( uv, index = 0 ) {
 
+			var channel = +index
 			var hash = uv.x.toString() + uv.y.toString();
 
-			if ( uvsHash[ hash ] !== undefined ) {
+			if ( uvsHash[channel][ hash ] !== undefined ) {
 
-				return uvsHash[ hash ];
+				return uvsHash[channel][ hash ];
 
 			}
 
-			uvsHash[ hash ] = uvs.length / 2;
-			uvs.push( uv.x, uv.y );
+			uvsHash[channel][ hash ] = uvs[channel].length / 2;
+			uvs[channel].push( uv.x, uv.y );
 
-			return uvsHash[ hash ];
+			return uvsHash[channel][ hash ];
 
 		}
 
@@ -1159,7 +1171,13 @@ Object.assign( Geometry.prototype, EventDispatcher.prototype, {
 		data.data.vertices = vertices;
 		data.data.normals = normals;
 		if ( colors.length > 0 ) data.data.colors = colors;
-		if ( uvs.length > 0 ) data.data.uvs = [ uvs ]; // temporal backward compatibility
+
+		// TTin: Support multiple uv
+		if ( uvs.length > 0 && !(uvs[0] instanceof Array) ) 
+			data.data.uvs = [ uvs ]; // temporal backward compatibility
+		else
+			data.data.uvs = uvs
+
 		data.data.faces = faces;
 
 		return data;
