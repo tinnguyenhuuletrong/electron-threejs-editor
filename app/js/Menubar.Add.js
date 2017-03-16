@@ -432,16 +432,28 @@ Menubar.Add = function ( editor ) {
 		// SKYDOME
 		var uniforms = {
 			topColor: {
-				value: new THREE.Color(0x0077ff)
+				value: {
+					r: 0 / 255,
+					g: 119 / 255,
+					b: 255 / 255
+				},
+				type: "c"
 			},
 			bottomColor: {
-				value: new THREE.Color(0xffffff)
+				value: {
+					r: 255 / 255,
+					g: 255 / 255,
+					b: 255 / 255
+				},
+				type: "c"
 			},
 			offset: {
-				value: 33
+				value: 33,
+				type: "f"
 			},
 			exponent: {
-				value: 0.6
+				value: 0.6,
+				type: "f"
 			}
 		};
 		var skyGeo = new THREE.SphereGeometry(4000, 32, 15);
