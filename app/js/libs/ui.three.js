@@ -44,7 +44,7 @@ UI.Texture = function ( mapping ) {
 
 	var name = document.createElement( 'input' );
 	name.disabled = true;
-	name.style.width = '64px';
+	name.style.width = '32px';
 	name.style.border = '1px solid #ccc';
 	dom.appendChild( name );
 

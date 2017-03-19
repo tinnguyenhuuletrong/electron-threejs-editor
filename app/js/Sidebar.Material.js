@@ -47,6 +47,18 @@ Sidebar.Material = function(editor) {
 
 	container.add(managerRow);
 
+	// multiple Mat
+
+	var multipleMatRow = new UI.Row();
+	var multipleMaterialChoices = new UI.Select().setOptions({
+
+	}).setWidth('150px').setFontSize('12px').onChange(multipleMatSelect);
+
+	multipleMatRow.add(new UI.Text('Materials').setWidth('90px'));
+	multipleMatRow.add(multipleMaterialChoices);
+
+	container.add(multipleMatRow);
+
 
 	// type
 
@@ -102,18 +114,6 @@ Sidebar.Material = function(editor) {
 	materialNameRow.add(materialName);
 
 	container.add(materialNameRow);
-
-	// multiple Mat
-
-	var multipleMatRow = new UI.Row();
-	var multipleMaterialChoices = new UI.Select().setOptions({
-
-	}).setWidth('150px').setFontSize('12px').onChange(multipleMatSelect);
-
-	multipleMatRow.add(new UI.Text('Materials').setWidth('90px'));
-	multipleMatRow.add(multipleMaterialChoices);
-
-	container.add(multipleMatRow);
 
 	// program
 
@@ -261,9 +261,17 @@ Sidebar.Material = function(editor) {
 	var materialMapEnabled = new UI.Checkbox(false).onChange(update);
 	var materialMap = new UI.Texture().onChange(update);
 
+	var textureDiffuseWrap = new UI.Select().setOptions({
+
+		1000: 'Repeat',
+		1001: 'Clamp'
+
+	}).setWidth('80px').setFontSize('12px').onChange(update);
+
 	materialMapRow.add(new UI.Text('Map').setWidth('90px'));
 	materialMapRow.add(materialMapEnabled);
 	materialMapRow.add(materialMap);
+	materialMapRow.add(textureDiffuseWrap)
 
 	container.add(materialMapRow);
 
@@ -500,6 +508,26 @@ Sidebar.Material = function(editor) {
 
 	container.add(materialWireframeRow);
 
+	// depth
+
+	var materialDepthTestRow = new UI.Row();
+	var materialDepthTest = new UI.Checkbox(true).onChange(update);
+
+	materialDepthTestRow.add(new UI.Text('DepthTest').setWidth('90px'));
+	materialDepthTestRow.add(materialDepthTest);
+
+	container.add(materialDepthTestRow);
+
+	// depth
+
+	var materialDepthWriteRow = new UI.Row();
+	var materialDepthWrite = new UI.Checkbox(true).onChange(update);
+
+	materialDepthWriteRow.add(new UI.Text('DepthWrite').setWidth('90px'));
+	materialDepthWriteRow.add(materialDepthWrite);
+
+	container.add(materialDepthWriteRow);
+
 	var self = this
 		//
 
@@ -615,6 +643,12 @@ Sidebar.Material = function(editor) {
 
 						editor.execute(new SetMaterialMapCommand(currentObject, 'map', map));
 
+					}
+
+					// update wrap UV
+					if(material.map) {
+						material.map.wrapS = +textureDiffuseWrap.getValue()
+						material.map.wrapT = +textureDiffuseWrap.getValue()
 					}
 
 				} else {
@@ -943,6 +977,18 @@ Sidebar.Material = function(editor) {
 
 			}
 
+			if (material.depthTest !== undefined && material.depthTest !== materialDepthTest.getValue()) {
+
+				editor.execute(new SetMaterialValueCommand(currentObject, 'depthTest', materialDepthTest.getValue()));
+
+			}
+
+			if (material.depthWrite !== undefined && material.depthWrite !== materialDepthWrite.getValue()) {
+
+				editor.execute(new SetMaterialValueCommand(currentObject, 'depthWrite', materialDepthWrite.getValue()));
+
+			}
+
 			refreshUI(null, self.selectedMat)
 
 		}
@@ -990,7 +1036,9 @@ Sidebar.Material = function(editor) {
 			'opacity': materialOpacityRow,
 			'transparent': materialTransparentRow,
 			'alphaTest': materialAlphaTestRow,
-			'wireframe': materialWireframeRow
+			'wireframe': materialWireframeRow,
+			'depthTest': materialDepthTestRow,
+			'depthWrite': materialDepthWriteRow
 		};
 
 		var material = mat || currentObject.material;
@@ -1126,7 +1174,7 @@ Sidebar.Material = function(editor) {
 			if (material.map !== null || resetTextureSelectors) {
 
 				materialMap.setValue(material.map);
-
+				textureDiffuseWrap.setValue(material.map.wrapS)
 			}
 
 		}
@@ -1322,6 +1370,17 @@ Sidebar.Material = function(editor) {
 			materialWireframeLinewidth.setValue(material.wireframeLinewidth);
 
 		}
+
+		if (material.depthTest != undefined) {
+
+			materialDepthTest.setValue(material.depthTest)
+		}
+
+		if (material.depthWrite != undefined) {
+			
+			materialDepthWrite.setValue(material.depthWrite)
+		}
+
 
 		setRowVisibility(material);
 
