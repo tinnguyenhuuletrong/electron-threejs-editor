@@ -32,7 +32,7 @@ export var SetMaterialCommand = function ( object, newMaterial ) {
 SetMaterialCommand.prototype = {
 
 	execute: function () {
-		if(this.subMatIndex) {
+		if(this.subMatIndex != null) {
 			const oldSubMat = this.mat.materials[this.subMatIndex]
 			this.mat.materials[this.subMatIndex] = this.newMaterial
 			
